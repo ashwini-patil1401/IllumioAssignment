@@ -1,4 +1,4 @@
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 
 public class Compute {
@@ -27,17 +27,24 @@ public class Compute {
     private void processLogData() {
         try {
             InputStream is = instance.getFileAsIOStream(LOG_FILE_NAME);
-            List<String[]> list = instance.getFileContent(is, REGEX);
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
-            for(String[] s : list) {
-                    String tag = lookUp.getTag(s[DST_PORT_INDEX], s[PROTOCOL_INDEX]);
-                    tagMap.put(tag, tagMap.getOrDefault(tag, 0) + 1);
-                    Key key = new Key(s[DST_PORT_INDEX], s[PROTOCOL_INDEX]);
-                    protoPortMap.put(key, protoPortMap.getOrDefault(key, 0) + 1);
+            String strLine;
+
+            //Read File Line By Line
+            while ((strLine = br.readLine()) != null) {
+                String[] s = strLine.split(REGEX);
+                String tag = lookUp.getTag(s[DST_PORT_INDEX], s[PROTOCOL_INDEX]);
+                tagMap.put(tag, tagMap.getOrDefault(tag, 0) + 1);
+                Key key = new Key(s[DST_PORT_INDEX], s[PROTOCOL_INDEX]);
+                protoPortMap.put(key, protoPortMap.getOrDefault(key, 0) + 1);
             }
+            is.close();
+
         } catch (Exception e) {
-            System.out.print("Compute Tags Exception: " + e.getMessage());
+            System.out.print("Exception in getFileContent: " + e.getMessage());
         }
+
     }
 
     private void generatePortProtocolCount() {

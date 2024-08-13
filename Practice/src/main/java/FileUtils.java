@@ -17,6 +17,7 @@ public class FileUtils {
     public List<String[]> getFileContent(InputStream is, String regex)
     {
         List<String[]> list = new ArrayList<String[]>();
+
         try
         {
             InputStreamReader isr = new InputStreamReader(is);
@@ -26,6 +27,7 @@ public class FileUtils {
                 String[] tokens = line.split(regex);
                 list.add(tokens);
             }
+
             is.close();
         } catch(Exception e) {
             System.out.print("Exception in getFileContent: " + e.getMessage());
