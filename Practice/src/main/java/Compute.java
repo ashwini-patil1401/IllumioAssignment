@@ -4,8 +4,8 @@ import java.util.*;
 public class Compute {
 
     //Enter the index as seen in flowlog file
-    final Integer DST_PORT_INDEX = 8;
-    final Integer PROTOCOL_INDEX = 9;
+    final Integer DST_PORT_INDEX = 6;
+    final Integer PROTOCOL_INDEX = 7;
 
     final String LOG_FILE_NAME = "flowlog.txt";
     final String PORT_PROTOCOL_COUNT_FILE_NAME = "portProtocolCount.txt";
@@ -28,16 +28,20 @@ public class Compute {
         try {
             InputStream is = instance.getFileAsIOStream(LOG_FILE_NAME);
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
-            String strLine;
+            String strLine = null;
 
             //Read File Line By Line
             while ((strLine = br.readLine()) != null) {
                 String[] s = strLine.split(REGEX);
-                String tag = lookUp.getTag(s[DST_PORT_INDEX], s[PROTOCOL_INDEX]);
-                tagMap.put(tag, tagMap.getOrDefault(tag, 0) + 1);
-                Key key = new Key(s[DST_PORT_INDEX], s[PROTOCOL_INDEX]);
-                protoPortMap.put(key, protoPortMap.getOrDefault(key, 0) + 1);
+                int len = s.length;
+                int status_index = len - 2;
+                if(s[status_index].equals("ACCEPT")) {
+                    String tag = lookUp.getTag(s[DST_PORT_INDEX], s[PROTOCOL_INDEX]);
+                    tagMap.put(tag, tagMap.getOrDefault(tag, 0) + 1);
+                    String protocol = s[PROTOCOL_INDEX];
+                    Key key = new Key(s[DST_PORT_INDEX], protocol);
+                    protoPortMap.put(key, protoPortMap.getOrDefault(key, 0) + 1);
+                }
             }
             is.close();
 
@@ -82,20 +86,20 @@ public class Compute {
 /**
  * OUTPUT:
  *
- *  PORT PROTOCOL COUNT:
- *
- * 68 udp 1
- * 43418 udp 2
- * 5001 tcp 2
- * 5001 udp 1
- * 43416 tcp 2
- *
- *  TAG COUNT:
- *
- * sv_P2 1
- * sv_P1 2
- * sv_P4 2
- * Untagged 3
- *
- * Process finished with exit code 0
+ PORT PROTOCOL COUNT:
+
+ 68 17 1
+ 22 17 1
+ 43418 6 1
+ 31 6 1
+ 443 17 1
+ 43416 6 2
+
+ TAG COUNT:
+
+ sv_P2 2
+ SV_P3 1
+ sv_P1 1
+ Untagged 3
+
  * */
