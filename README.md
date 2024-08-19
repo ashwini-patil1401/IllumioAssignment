@@ -3,29 +3,30 @@ Created this project with IntelliJ and executed the same there with sample logs
 
 Input: 
 flowlog.txt
-version vpc-id subnet-id instance-id interface-id srcaddr dstaddr srcport dstport protocol
-3 vpc-abcdefab012345678 subnet-aaaaaaaa012345678 i-01234567890123456 eni-1235b8ca123456789 10.0.0.62 52.213.180.42 5001 43418 udp
+version accno eni src dst srcport dstport protocol packets bytes start end action logstatus
+2 123456789010 eni-1235b8ca123456789 172.31.16.139 172.31.16.21 20641 43418 6 20 4249 1418530010 1418530070 ACCEPT OK
 
 lookup.csv
 dstport, protocol, tag
-23,tcp,sv_P1
-31,udp,SV_P3
+68,17,sv_P2
 
 Place these files in this format in Practice/src/main/resources folder
 
-Output:
-The output files will be generated in Practice folder
+ OUTPUT:
 
-portProtocolCount.txt
-68 udp 1
-43418 udp 2
-5001 tcp 2
-5001 udp 1
-43416 tcp 2
+ PORT PROTOCOL COUNT:
 
+ 68 17 1
+ 22 17 1
+ 43418 6 1
+ 31 6 1
+ 443 17 1
+ 43416 6 2
 
-tagCount.txt
-sv_P2 1
-sv_P1 2
-sv_P4 2
-Untagged 3
+ TAG COUNT:
+
+ sv_P2 2
+ SV_P3 1
+ sv_P1 1
+ Untagged 3
+
